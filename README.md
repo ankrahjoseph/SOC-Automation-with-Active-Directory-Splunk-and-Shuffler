@@ -75,5 +75,17 @@ I downloaded the Splunk universal forwarder for Windows Server 2022 and isntalle
 **index = myprojad**  
 **disabled = false**  
 
+I restarted the SplunkForwarder Service on both VMs and made sure they log on as localSystem. I went back to the splunk portal and searched for index=myprojad got telemetry from both hosts.
+
+![Telemetry]()
+
+I tested put a few searches and came up with a search input to detect suspicious login even via RDP. 
+
+>index="myprojad" EventCode=4624 (Logon_Type=7 OR Logon_Type=10) Source_Network_Address=* Source_Network_Address!="-" Source_Network_Address!=104.*
+
+The search looks for Events with EventCode 4624 (successful logon), logon type 7 or 10 (RDP), having a source IP, Source IP not being blank and Source IP not starting from 104.###.###.###.  
+In this scenario, our company's IPs start with 104.###.###.### so any IP outside that range is suspicious. I loggen on to the test computer as Psmith with a different IP and got a hit.
+
+![First Sus Event]()
 
 
