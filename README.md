@@ -26,7 +26,8 @@ I created a firewall Group to only allow SSH and RDP from my laptop to secure th
 
 ![Firewall Rules]()
 
-The Servers had to be able to communicate with each other so I enabled VPC Network on all the VMs. For the VMs runnings windows, I had to manually configure the network adapter for the private network.  
+The Servers had to be able to communicate with each other so I enabled VPC Network on all the VMs. For the VMs runnings windows, I had to manually configure the network adapter for the private network.
+
 **Splunk VPC**
 
 ![Splunk VPC]()
@@ -35,6 +36,44 @@ The Servers had to be able to communicate with each other so I enabled VPC Netwo
 
 ![Proj-ADDC VPC]()  
 ![Proj-ADDC Adapter]()
+
+**Col-Vult02 VPC and Adapter Settings**
+
+![Col-Vult VPC]()  
+![Col-Vult Adapter]()  
+>I used the domain controller's private IP address as the preffered DNS server so I can join the domain.
+
+After configuring the Adapters, I pinged the servers to confirm they could talk to each other.
+
+On the Project-ADDC01 server, I installed Active Directory Services and set **myprojad.local** as the domain when I promoted it to a domain controller. I created three user accounts and made one a Domain Admin so I could easily change settings on the servers. On the Col-Vult02 I joined the domain and authenticated with the admin account I created.
+
+![Col-Vult02]()  
+
+I also created a security group and added all the users to it then on the Col-Vult02 VM, I allowed the security group to connect to it via RDP. I used the security group to make it easier to manage and not have to allow each user individually. Hence, any new account created just needs to be added to the security group to have access to connect to Col-Vult02 via RDP.
+
+I connected to Project-Splunk VM via SSH and run **$ apt-get update && apt-get upgrade** to update the server. After the update, I visited splunk enterprise [download](https://www.splunk.com/en_us/download/splunk-enterprise.html) page and copied the wget command for linux .deb package.
+
+![Splunk download]()
+
+After running the command on the Project-Splunk VM, I run **$ dpkg -i splunk###.deb** to install Splunk on the server.
+
+![Splunk install]()
+
+After installation, I navigated to /opt/splunk/bin and run **$ ./splink start** to start the service and configure the admin credentials. I enabled TCP port 8000 from my computer's IP on the firewall group on Vultr and run **$ ufw allow 8000** on the splunk server to allow incoming connections to the splunk portal.
+
+On my computer I accessed the splunk portal via web browser with public IP of Project-Splunk VM and port 8000 (140.82.1.26:8000) then logged on as admin with the credentials created via the installation.
+
+![Logon Splunk]()
+
+I changed the timezone settings in Splunk to EST to personalize log timestamps, installed splunk windows add-on App, created a new index (myprojad) and configured splunk to receive data through port 9997. 
+
+![Splunk Rec Config]()
+
+I downloaded the Splunk universal forwarder for Windows Server 2022 and isntalled it on both of Windows Server VM,configired the forwarder to send to receiver at Private IP of the Splunk server on port 9997 (10.1.96.4:9997) then I navigated to **C:\Program Files\SplunkUniversalForwarder\etc\system\default** on both VMs, copied the **inputs.conf** file to **C:\Program Files\SplunkUniversalForwarder\etc\system\local** and edited the **inputs.conf** file in the **local** directory by appending the file with:
+
+**[WinEventLog://Security]**  
+**index = myprojad**  
+**disabled = false**  
 
 
 
