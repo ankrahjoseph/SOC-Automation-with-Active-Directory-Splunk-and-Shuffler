@@ -1,0 +1,2 @@
+# SOC-Automation-with-Active-Directory-Splunk-and-Shuffler
+Set up servers on cloud, configured active directory and Splunk then set an playbook on Shuffler to send an alert to SOC team on Slack whenever there is an unauthorized login via RDP on any user account.  Playbook then sends an email asking if the user should be disabled; if SOC analyst clicks NO, nothing happens else account is disabled on AD
