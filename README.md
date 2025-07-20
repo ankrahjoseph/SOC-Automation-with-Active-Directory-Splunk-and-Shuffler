@@ -8,7 +8,7 @@ You work for a company "MYPROJAD" that uses Active directory to manage its users
 
 I started by visualizing the logic and flow of the project using [Drawio](https://www.drawio.com).
 
-![drawio]()
+![drawio](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Drawio.png)
 
 From the diagram, an Attacker succesfully authenticates into the test computer. The event is logged and sent to the Splunk server which triggers the playbook in Shuffler. An alert notification is sent to the SOC Team channel on slack and an email is sent to the SOC Team asking if the user account should be disabled. When the SOC Analyst clicks **NO** nothing happens but when **YES** is clicked, the playbook send a command to the Domain Controller to Disable the user. When succesfully disabled, the playbook sends confirmation to the Slack channel.
 
@@ -20,54 +20,54 @@ In this Project, I set up the virtual machines on the cloud with [Vultr](https:/
 - **Col-Vult02** (Test Computer): 1vCPU, 2GB RAM, 55GB SSD and Windows Server 2022 Operating System with a public IP assigned.
 - **Project-Splunk** (Splunk Server): 4vCPUs, 8GB RAM, 160GB SSD and Ubuntu 22.04 Operating System with a public IP assigned.
 
-![Dashboard]()
+![Dashboard](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Dashboard.png)
 
 I created a firewall Group to only allow SSH and RDP from my laptop to secure the network. I later on enabled RDP for any IP to allow suspicious login to the test Machine.
 
-![Firewall Rules]()
+![Firewall Rules](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Firewall%20Rules.png)
 
 The Servers had to be able to communicate with each other so I enabled VPC Network on all the VMs. For the VMs runnings windows, I had to manually configure the network adapter for the private network.
 
 **Splunk VPC**
 
-![Splunk VPC]()
+![Splunk VPC](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Splunk%20VPC.png)
 
 **Project-ADDC01 VPC and Adapter Settings**
 
-![Proj-ADDC VPC]()  
-![Proj-ADDC Adapter]()
+![Proj-ADDC VPC](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Project-ADDC01%20VPC.png)  
+![Proj-ADDC Adapter](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Project-ADDC01%20Adapter%203%20settings.png)
 
 **Col-Vult02 VPC and Adapter Settings**
 
-![Col-Vult VPC]()  
-![Col-Vult Adapter]()  
+![Col-Vult VPC](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Col-Vult%20VPC.png)  
+![Col-Vult Adapter](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Col-Vult%20Adapter%203%20settings.png)  
 >I used the domain controller's private IP address as the preffered DNS server so I can join the domain.
 
 After configuring the Adapters, I pinged the servers to confirm they could talk to each other.
 
 On the Project-ADDC01 server, I installed Active Directory Services and set **myprojad.local** as the domain when I promoted it to a domain controller. I created three user accounts and made one a Domain Admin so I could easily change settings on the servers. On the Col-Vult02 I joined the domain and authenticated with the admin account I created.
 
-![Col-Vult02]()  
+![Col-Vult02](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Col-Vult%20Joining%20AD.png)  
 
 I also created a security group and added all the users to it then on the Col-Vult02 VM, I allowed the security group to connect to it via RDP. I used the security group to make it easier to manage and not have to allow each user individually. Hence, any new account created just needs to be added to the security group to have access to connect to Col-Vult02 via RDP.
 
 I connected to Project-Splunk VM via SSH and run **$ apt-get update && apt-get upgrade** to update the server. After the update, I visited splunk enterprise [download](https://www.splunk.com/en_us/download/splunk-enterprise.html) page and copied the wget command for linux .deb package.
 
-![Splunk download]()
+![Splunk download](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/splunk%20download%20page.png)
 
 After running the command on the Project-Splunk VM, I run **$ dpkg -i splunk###.deb** to install Splunk on the server.
 
-![Splunk install]()
+![Splunk install](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Splunk%20Installation%20on%20Ubuntu%20Server.png)
 
 After installation, I navigated to /opt/splunk/bin and run **$ ./splink start** to start the service and configure the admin credentials. I enabled TCP port 8000 from my computer's IP on the firewall group on Vultr and run **$ ufw allow 8000** on the splunk server to allow incoming connections to the splunk portal.
 
 On my computer I accessed the splunk portal via web browser with public IP of Project-Splunk VM and port 8000 (140.82.1.26:8000) then logged on as admin with the credentials created via the installation.
 
-![Logon Splunk]()
+![Logon Splunk](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Login%20into%20splunk%20on%20my%20laptop.png)
 
 I changed the timezone settings in Splunk to EST to personalize log timestamps, installed splunk windows add-on App, created a new index (myprojad) and configured splunk to receive data through port 9997. 
 
-![Splunk Rec Config]()
+![Splunk Rec Config](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Splunk%20receive%20data%20config.png)
 
 I downloaded the Splunk universal forwarder for Windows Server 2022 and isntalled it on both of Windows Server VM,configired the forwarder to send to receiver at Private IP of the Splunk server on port 9997 (10.1.96.4:9997) then I navigated to **C:\Program Files\SplunkUniversalForwarder\etc\system\default** on both VMs, copied the **inputs.conf** file to **C:\Program Files\SplunkUniversalForwarder\etc\system\local** and edited the **inputs.conf** file in the **local** directory by appending the file with:
 
@@ -77,7 +77,7 @@ I downloaded the Splunk universal forwarder for Windows Server 2022 and isntalle
 
 I restarted the SplunkForwarder Service on both VMs and made sure they log on as localSystem. I went back to the splunk portal and searched for index=myprojad got telemetry from both hosts.
 
-![Telemetry]()
+![Telemetry](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/configured%20splunk%20receiving%20telemetry%20.png)
 
 I tested put a few searches and came up with a search input to detect suspicious login even via RDP. 
 
@@ -87,25 +87,25 @@ The search looks for Events with EventCode 4624 (successful logon), logon type 7
 
 In this scenario, our company's IPs start with 104.###.###.### so any IP outside that range is suspicious. I loggen on to the test computer as Psmith with a different IP and got a hit.
 
-![First Sus Event]()
+![First Sus Event](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/First%20suspicious%20login.png)
 
 I piped the command to **stats count by _time,ComputerName,Source_Network_Address,user,Logon_Type** and saved it as an alert; the alert is set to trigger in realtime and triger per result. When the alert is triggered, it adds to Triggered Alerts and sends to a Shuffler SOAR webhook.
 
-![Alert Settings]()
+![Alert Settings](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Splunk%20Alert%20Settings.png)
 
-![triggered alert]()  
+![triggered alert](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/MyTriggered%20Alert.png)  
 >Triggered Alert
 
 ## Shuffler SOAR
-![ShufflerPlay]()  
+![ShufflerPlay](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Shuffler%20logic.png)  
 Logic flow of Playbook
 
 When the webhook receives the alert from Splunk, it forwards it to the Slack Node.  
 I authenticated the slack node to use the Slack SOC Workplace I created, configured the text to send and specified the channel to post into with the channel unique ID.  
->Link to the Slack Alert Notification Node [screenshot]().  
+>Link to the Slack Alert Notification Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Alert%20Node.png).  
 
 After the Slack Alert is sent, it sends a Query alert to SOC email asking if user should be disabled.  
->Link to Query Alert Node [screenshot]().
+>Link to Query Alert Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Query%20Alert%20Node.png).
 
 When SOC Analyst clicks **No**, the workflow aborts but when the SOC Analyst clicks **Yes**, the workflow continues.
 
@@ -113,9 +113,9 @@ If the SOC Analyst clicks **Yes**, the Disable_User_action Node (Active Director
 >Link to Disable_User_action Node [screenshot]().
 
 After user is disabled, Get User Attributes node is run to check if user is disabled then continue the workflow to send a Slack confimation that the user was disabled. If after checking attributes and user is not disabled, no confirmation would be sent to the SOC channel in Slack then the engineer can toubleshoot the playbook for issues. This node uses the same AD authentication set for the previous node.
->Link to Get User Attributes Node [screenshot]().
+>Link to Get User Attributes Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Get%20user%20attri.png).
 
 The Check AD user Node (repeat back to me) calls for the **AccountControl** attribute and compares to find if it contains **"ACCOUNTDISABLED"** before continuing the flow if it returns true.
->Link to Check AD User Node [screenshot]().
+>Link to Check AD User Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Check%20AD%20user.png).
 
 If the logic returns true, the Update Notification Node sends a confirmation to the Slack channel.
