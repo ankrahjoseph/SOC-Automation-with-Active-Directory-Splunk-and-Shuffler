@@ -110,7 +110,7 @@ After the Slack Alert is sent, it sends a Query alert to SOC email asking if use
 When SOC Analyst clicks **No**, the workflow aborts but when the SOC Analyst clicks **Yes**, the workflow continues.
 
 If the SOC Analyst clicks **Yes**, the Disable_User_action Node (Active Directory) run. I authenticated the login details, IP, Port and domain for Shuffler to be able disable the user.  
->Link to Disable_User_action Node [screenshot]().
+>Link to Disable_User_action Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Disable%20user.png).
 
 After user is disabled, Get User Attributes node is run to check if user is disabled then continue the workflow to send a Slack confimation that the user was disabled. If after checking attributes and user is not disabled, no confirmation would be sent to the SOC channel in Slack then the engineer can toubleshoot the playbook for issues. This node uses the same AD authentication set for the previous node.
 >Link to Get User Attributes Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Get%20user%20attri.png).
