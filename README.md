@@ -26,6 +26,15 @@ I created a firewall Group to only allow SSH and RDP from my laptop to secure th
 
 ![Firewall Rules]()
 
-The Servers had to be able to communicate with each other so I enabled VPC Network on all the VMs. For the VMs runnings windows, I had to manually configure the network adapter for the private network.
->Splunk VPC
+The Servers had to be able to communicate with each other so I enabled VPC Network on all the VMs. For the VMs runnings windows, I had to manually configure the network adapter for the private network.  
+**Splunk VPC**
+
+![Splunk VPC]()
+
+**Project-ADDC01 VPC and Adapter Settings**
+
+![Proj-ADDC VPC]()  
+![Proj-ADDC Adapter]()
+
+
 
