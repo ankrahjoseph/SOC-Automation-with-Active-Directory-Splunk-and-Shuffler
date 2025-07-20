@@ -120,4 +120,4 @@ The Check AD user Node (repeat back to me) calls for the **AccountControl** attr
 
 If the logic returns true, the Update Notification Node sends a confirmation to the Slack channel.
 
-For a Video Demonstration, click [here]()
+For a Video Demonstration, click [here](Demo.md)
