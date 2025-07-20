@@ -1,4 +1,4 @@
-# SOC Automation with Active Directory Splunk and Shuffler
+# SOC Automation with Active Directory, Splunk and Shuffler SOAR
 Set up Virtual Machines on the cloud, configured Active Directory and Splunk then setup a playbook on Shuffler Soar to Automate Incident Response whenever there is a suspicious RDP logon event.
 
 >This project helps automate incidence response by allowing Security Analysts to stop attacks in a timely manner.
