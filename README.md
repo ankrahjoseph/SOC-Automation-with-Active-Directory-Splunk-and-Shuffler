@@ -119,3 +119,5 @@ The Check AD user Node (repeat back to me) calls for the **AccountControl** attr
 >Link to Check AD User Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Check%20AD%20user.png).
 
 If the logic returns true, the Update Notification Node sends a confirmation to the Slack channel.
+
+For a Video Demonstration, click [here]()
