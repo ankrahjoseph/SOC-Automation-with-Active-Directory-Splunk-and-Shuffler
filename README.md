@@ -102,21 +102,26 @@ Logic flow of Playbook
 
 When the webhook receives the alert from Splunk, it forwards it to the Slack Node.  
 I authenticated the slack node to use the Slack SOC Workplace I created, configured the text to send and specified the channel to post into with the channel unique ID.  
->Link to the Slack Alert Notification Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Alert%20Node.png).  
+
+![screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Alert%20Node.png).  
 
 After the Slack Alert is sent, it sends a Query alert to SOC email asking if user should be disabled.  
->Link to Query Alert Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Query%20Alert%20Node.png).
+
+![screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Query%20Alert%20Node.png).
 
 When SOC Analyst clicks **No**, the workflow aborts but when the SOC Analyst clicks **Yes**, the workflow continues.
 
 If the SOC Analyst clicks **Yes**, the Disable_User_action Node (Active Directory) run. I authenticated the login details, IP, Port and domain for Shuffler to be able disable the user. LDAP uses port 389 so I allowed TCP port 389 from any IP on the group firewall in Vultr.  
->Link to Disable_User_action Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Disable%20user.png).
+
+![screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Disable%20user.png).
 
 After user is disabled, Get User Attributes node is run to check if user is disabled then continue the workflow to send a Slack confimation that the user was disabled. If after checking attributes and user is not disabled, no confirmation would be sent to the SOC channel in Slack then the engineer can toubleshoot the playbook for issues. This node uses the same AD authentication set for the previous node.
->Link to Get User Attributes Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Get%20user%20attri.png).
+
+![screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Get%20user%20attri.png).
 
 The Check AD user Node (repeat back to me) calls for the **AccountControl** attribute and compares to find if it contains **"ACCOUNTDISABLED"** before continuing the flow if it returns true.
->Link to Check AD User Node [screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Check%20AD%20user.png).
+
+![screenshot](https://github.com/ankrahjoseph/SOC-Automation-with-Active-Directory-Splunk-and-Shuffler/blob/main/AD%20Project/Check%20AD%20user.png).
 
 If the logic returns true, the Update Notification Node sends a confirmation to the Slack channel.
 
